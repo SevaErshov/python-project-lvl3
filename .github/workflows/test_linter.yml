@@ -1,0 +1,22 @@
+name: test and lint
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          make install
+      - name: linter
+        run: make lint
+      - name: test
+        run: make test
+      - name: publish code coverage to code-climate
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: 471ccb7c676f1dfb04943e504659cd1e48a179a797c9275309b04918e01e561c
+        with:
+          coverageCommand: make coverage
