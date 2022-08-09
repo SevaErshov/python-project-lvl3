@@ -18,7 +18,7 @@ test:
 	poetry run pytest -vv
 
 coverage:
-	poetry run pytest --cov=gendiff tests/ --cov-report xml
+	poetry run pytest --cov=page_loader tests/ --cov-report xml
 
 test-coverage:
-	poetry run pytest --cov=gendiff
+	poetry run pytest --cov=page_loader
