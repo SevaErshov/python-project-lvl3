@@ -11,9 +11,7 @@ package-install: #устанвока пакета в пользовательс�
 	python3 -m pip install --user --force-reinstall dist/*.whl
 
 lint: #проверяет линтером 
-	poetry run flake8
-
-lint-test: #проверяет линтером 
+	poetry run flake8 page_loader
 	poetry run flake8 tests
 
 test:
