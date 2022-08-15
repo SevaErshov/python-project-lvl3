@@ -18,6 +18,15 @@ def name(url: str):
     return url
 
 
+def domain_only(url: str):
+    schema_idx = url.find('://')
+    schema = url[:schema_idx + 3]
+    url = url[schema_idx + 3:]
+    domain_end = url.find('/')
+    url = url[:domain_end]
+    return schema + url
+
+
 def name_pic(url: str, src: str, directory: str):
     path, _ = splitext(src)
     file_name = re.split(r'\W+', path[1:])
@@ -26,10 +35,10 @@ def name_pic(url: str, src: str, directory: str):
     return directory + '/' + file_name
 
 
-def download_pics(url: str, src: str, directory: str, file):
+def download_pics(url: str, src: str, directory: str):
     if url[-1] == '/':
         url = url[:len(url) - 1]
-    img = requests.get(url + src)
+    img = requests.get(domain_only(url) + src)
     path_storage = name_pic(url, src, directory)
     img_storage = open(path_storage, 'wb')
     img_storage.write(img.content)
@@ -55,7 +64,7 @@ def find_src(file):
     images = soup.find_all('img')
     if images == []:
         return None
-    return [img.get('src') for img in images if img.get('src')[0] == '/'] #костыли наше всё
+    return [img.get('src') for img in images if img.get('src').find('//') == -1] #костыли наше всё
 
 
 def download(url: str, dirname=None):
@@ -74,7 +83,7 @@ def download(url: str, dirname=None):
     directory = dirname + '/' + dir_files
     mkdir(directory)
     for image in images:
-        download_pics(url, image, directory, file)
+        download_pics(url, image, directory)
     edit_html(path, url, dir_files)
     file.close()
     return path
