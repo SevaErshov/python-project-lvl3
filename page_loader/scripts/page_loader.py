@@ -64,8 +64,11 @@ def find_src(file):
     images = soup.find_all('img')
     if images == []:
         return None
-    return [img.get('src') for img in images if img.get('src').find('//') == -1] #костыли наше всё
-
+    list_of_images = []
+    for image in images:
+        if image.get('src').find('//') == -1 and image.get('src').find('?'):
+            list_of_images.append(image.get('src'))
+    return list_of_images
 
 def download(url: str, dirname=None):
     if dirname is None or dirname == 'current':
