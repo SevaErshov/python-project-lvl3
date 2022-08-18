@@ -13,10 +13,13 @@ def name(url: str):
     return url
 
 
-def name_pic(url: str, src: str, directory: str):
+def name_file(url: str, src: str, directory: str):
     path, ext = splitext(src)
+    if ext == '':
+        ext = '.html'
     file_name = re.split(r'\W+', path[1:])
     file_name = '-'.join(file_name) + ext  # + '.png'
+    url = ''.join(urlparse(url)[0] + '://' + urlparse(url)[1])
     file_name = name(url) + '-' + file_name
     return directory + '/' + file_name
 
