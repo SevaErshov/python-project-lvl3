@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from os import mkdir
 from page_loader.naming.give_name import name, name_pic, domain_only
+from page_loader.working_with_files.find_src import edit_src
 
 
 def download_pics(url: str, src: str, directory: str):
@@ -20,7 +21,7 @@ def edit_html(path, url, directory):
     soup = BeautifulSoup(file, 'html.parser')
     images = soup.find_all('img')
     for image in images:
-        new_src = name_pic(url, image.get('src'), directory)
+        new_src = name_pic(url, edit_src(image.get('src'), url), directory)
         image['src'] = new_src
     to_write = soup.prettify()
     file.close()

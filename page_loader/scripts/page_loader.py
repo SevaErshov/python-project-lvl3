@@ -20,7 +20,7 @@ def download(url: str, dirname=None):
         dirname = getcwd()
     path = create_html_page(url, dirname)
     file = open(path)
-    images = find_src(file)
+    images = find_src(file, url)
     file.close()
     if images is None or images == []:
         return path

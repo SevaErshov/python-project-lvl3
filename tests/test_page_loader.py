@@ -35,16 +35,19 @@ def test_download_pics(requests_mock):
     requests_mock.get('http://test.com/some/beautiful/pic.png', content=pic)
     second_pic = open('tests/fixtures/pics.jpg', 'rb').read()
     requests_mock.get('http://test.com/any/pics.jpeg', content=second_pic)
+    requests_mock.get("http://test.com/piclol.png", content=second_pic)
     expected_pic = open('tests/fixtures/expected_pic.html', 'r').read()
     with tempfile.TemporaryDirectory() as tmpdirname:
         p.download('http://test.com/picture', tmpdirname)
         current = open(tmpdirname + '/test-com-picture.html').read()
         new_dir = tmpdirname + "/test-com-picture_files"
         new_file = new_dir + "/test-com-picture-some-beautiful-pic.png"
-        new_file1 = new_dir + "/test-com-picture-any-pics.png"
+        new_file1 = new_dir + "/test-com-picture-any-pics.jpeg"
+        new_file2 = new_dir + "/test-com-picture-piclol.png"
         assert exists(new_dir)
         assert exists(new_file)
         assert exists(new_file1)
+        assert exists(new_file2)
         assert expected_pic == current
 
 
