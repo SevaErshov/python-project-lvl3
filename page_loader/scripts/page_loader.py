@@ -23,10 +23,16 @@ def create_html_page(url, dirname):
     return path
 
 
+def check_dirname(dirname):
+    if not exists(dirname):
+        logger.exception(f'Directory \'{dirname}\' doesn\'t exist!')
+
+
 def download(url: str, dirname=None):
     logger.info(f'requested url: {url}')
     if dirname is None or dirname == 'current':
         dirname = getcwd()
+    check_dirname(dirname)
     logger.info(f'output path: {dirname}')
     path = create_html_page(url, dirname)
     file = open(path)
