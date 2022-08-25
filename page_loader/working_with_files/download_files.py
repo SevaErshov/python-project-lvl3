@@ -5,6 +5,7 @@ from page_loader.naming.give_name import name, name_file, domain_only
 from page_loader.working_with_files.find_files import edit_format, check_format
 from os.path import splitext
 from urllib.parse import urlparse
+from page_loader.logger import logger, InternalError
 
 
 def download_tags(url: str, tag: str, directory: str):
@@ -25,6 +26,7 @@ def download_tags(url: str, tag: str, directory: str):
     img_storage = open(path_storage, 'wb')
     img_storage.write(file.content)
     img_storage.close()
+    logger.info(f'File \'{path_storage}\' was uploaded')
     return path_storage
 
 
@@ -53,7 +55,14 @@ def edit_html(path, url, directory):
 def download_files(url: str, dirname: str, path: str, files: list):
     dir_files = name(url) + '_files'
     directory = dirname + '/' + dir_files
-    mkdir(directory)
+
+    try:
+        mkdir(directory)
+    except FileExistsError:
+        raise InternalError(f'Directory \'{directory}\' already exists')
+
+    logger.info(f'Directory \'{directory}\' was created')
+    logger.info('Start downloading files')
     for tag in files:
         download_tags(url, tag, directory)
     edit_html(path, url, dir_files)

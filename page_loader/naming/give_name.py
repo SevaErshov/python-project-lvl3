@@ -3,6 +3,10 @@ from os.path import splitext
 from urllib.parse import urlparse
 
 
+def path_name(url, dirname):
+    return dirname + '/' + name(url) + '.html'
+
+
 def name(url: str):
     url = ''.join(urlparse(url)[1:])
     path, ext = splitext(url)
