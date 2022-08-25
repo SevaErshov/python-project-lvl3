@@ -1,6 +1,8 @@
 import tempfile
 import page_loader as p
 from os.path import exists
+import pytest
+from page_loader.logger import InternalError, ResponseError
 
 
 def test_name():
@@ -90,3 +92,26 @@ def test_with_link(requests_mock):
         assert exists(new_file1)
         assert exists(new_file)
         assert expected == current
+
+
+def test_error_code(requests_mock):
+    requests_mock.get('https://test.com/404', status_code=404)
+    requests_mock.get('https://test.com/301', status_code=301)
+    requests_mock.get('https://test.com/403', status_code=403)
+    requests_mock.get('https://test.com/204', status_code=204)
+    requests_mock.get('https://test.com/401', status_code=401)
+    requests_mock.get('https://test.com/305', status_code=305)
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        with pytest.raises(ResponseError):
+            p.download('https://test.com/404', tmpdirname)
+            p.download('https://test.com/301', tmpdirname)
+            p.download('https://test.com/403', tmpdirname)
+            p.download('https://test.com/204', tmpdirname)
+            p.download('https://test.com/401', tmpdirname)
+            p.download('https://test.com/305', tmpdirname)
+
+
+def test_internal_error(requests_mock):
+    requests_mock.get('https://test.com/links')
+    with pytest.raises(InternalError):
+        p.download('https://test.com/links', '/lol/what')

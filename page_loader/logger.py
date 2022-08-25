@@ -7,3 +7,7 @@ logger = logging.getLogger(__name__)
 
 class InternalError(Exception):
     pass
+
+
+class ResponseError(InternalError):
+    pass
